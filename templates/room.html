@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>聊天室</title>
+	<link rel="stylesheet" href="{{ static_url('bootstrap-3.3.5/css/bootstrap.css') }}">
+	<style>
+    .msg-box {
+    	margin: 10px 5px;
+    	/*width:200px;*/
+    	/*height: 30px;*/
+    	line-height: 20px;
+    	padding: 5px;
+    	display: block;
+    	/*border: solid 1px #ddd;
+    	border-radius: 3px;*/
+    }
+    .msg-left {
+    	text-align: left;
+    }
+    .msg-right{
+    	text-align: right;
+    }
+    .msg-list {
+    	height: 300px;
+    	border-left:solid 1px #ddd;
+    	border-right:solid 1px #ddd;
+    	margin-top: 0
+    }
+    footer {
+    	margin-top: 20px;
+		background-color: #555;
+		color: white;
+		padding: 15px;
+    }
+    
+  </style>
+</head>
+<body>
+
+{% include 'base/nav.html' %}
+
+<div class="container text-center">    
+	<div class="row content sidenav">
+		<div class="col-sm-2 sidenav" style="text-align: left;">
+			<div class="list-group" style="height: 450px;border: solid 1px #ddd;">
+			  <a href="#" class="list-group-item">张三</a>
+			  <a href="#" class="list-group-item">李四</a>
+			  <a href="#" class="list-group-item">王五</a>
+			</div>
+			<div class="input-group">
+				<input type="text" class="form-control" placeholder="Search..">
+				<span class="input-group-btn">
+					<button class="btn btn-default" type="button">
+						<span class="glyphicon glyphicon-search"></span>
+					</button>
+				</span>
+			</div>
+		</div>
+		<div class="col-sm-8 text-left"> 
+			<h4 style="margin-left: 10px;">聊天室</h4>
+			<hr style="margin: 0">
+			<div class="msg-list">
+			{% for item in msg %}
+				{{ item.userid }}:&nbsp;{{ item.msg }} <br>
+			{% end %}
+				<!-- <span class="msg-box msg-left">
+				你好
+				</span>
+				<span class="msg-box msg-right">你好</span> -->
+			</div>
+			
+			<hr>
+			<div onkeydown="on_return(event);" class="form-group">
+				{% raw xsrf_form_html() %}
+				<input type="text" name="message" class="form-control" />
+				<input type="button" name="submit" class="btn btn-primary" value="发送" style="margin-top: 15px;float: right">
+			</div>
+		</div>
+		<div class="col-sm-2">
+	  		<div class="well">
+	    		<p>ADS</p>
+	  		</div>
+		  	<div class="well">
+		    	<p>ADS</p>
+		  	</div>
+		</div>
+	</div>
+</div>
+
+<footer class="container-fluid">
+	<p>@2016 &nbsp;王志文</p>
+</footer>
+
+<!-- 
+	<div>
+		<ul class="pagination">
+		  <li><a href="#">1</a></li>
+		  <li class="active"><a href="#">2</a></li>
+		  <li><a href="#">3</a></li>
+		  <li><a href="#">4</a></li>
+		  <li><a href="#">5</a></li>
+		</ul>
+	</div>
+	<div>
+		<ul class="list-group">
+		  <li class="list-group-item"><span class="badge">12</span> New</li>
+		  <li class="list-group-item"><span class="badge">5</span> Deleted</li> 
+		  <li class="list-group-item"><span class="badge">3</span> Warnings</li> 
+		</ul>
+	</div>
+	
+	<div>
+		<a href="#">News <span class="badge">5</span></a><br>
+		<a href="#">Comments <span class="badge">10</span></a><br>
+		<a href="#">Updates <span class="badge">2</span></a>
+	</div>-->
+	
+</body>
+<script type="text/javascript" src="{{ static_url('jquery-2.0.3.min.js') }}"></script>
+<script type="text/javascript" src="{{ static_url('bootstrap-3.3.5/js/bootstrap.js') }}"></script>
+<script language="javascript">
+$(document).ready(function() {
+
+    document.getElementsByName("message")[0].focus();
+    
+    var updater = {
+		poll: function(){
+		    $.ajax({
+	    		url: "/longpolling",
+			    type: "POST",
+			    dataType: "json",
+			    data:{"_xsrf":$("input[name='_xsrf']").val()},
+			    success: updater.onSuccess,
+			    error: updater.onError});
+			},
+        onSuccess: function(data, dataStatus){
+            try{
+                if (data.msg != "") {
+                	$(".msg-list").append(data.name+": " + data.msg + "<br />");
+                }
+            }
+            catch(e){
+            	updater.onError(e);
+            	return;
+            }
+            updater.poll();
+        },
+        onError: function(e){
+            if (e.message)
+            	console.log("Poll Error" + e.message);
+            else
+            	console.log(e);
+        	}
+      	};
+
+    updater.poll();
+
+	$("input[name='submit']").click(function () {
+		$.ajax({
+			url:"/chat",
+			type:"post",
+			dataType:"json",
+			data:{
+				"message":$("input[name='message']").val(),
+				"_xsrf":$("input[name='_xsrf']").val()
+			},
+			success:function(data){
+				document.getElementsByName("message")[0].value = ""
+			}
+		})
+	})
+})
+</script>
+<script>
+	
+</script>
+
+<script>
+	//点击
+	function on_return(evt){
+		evt = evt ? evt : (window.event ? window.event : null);
+		if(evt.keyCode == 13){
+			if (document.all('submit')!=null){
+				document.all('submit').click();
+		    }
+	 	}
+	 }
+</script>
+</html>
