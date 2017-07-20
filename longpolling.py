@@ -1,16 +1,12 @@
 #coding:utf-8
-import os
-import datetime
 import time
-import torndb
+import sys
 import tornado.web
-import json
 import tornadoredis
 from tornado.escape import json_encode
 
 class LongPollingHandler(tornado.web.RequestHandler):
     """"""
-    
     @tornado.web.asynchronous
     def post(self):
         self.get_data()

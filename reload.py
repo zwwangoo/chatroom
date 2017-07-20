@@ -1,20 +1,20 @@
-#coding:utf-8
-import os
+# coding: utf-8
 import time
-import torndb
 import tornado.web
+from settings import db
 
 
-# # mysql 链接
-db = torndb.Connection(
-    host="127.0.0.1:3306", 
-    database="chatroom",
-    user="root",
-    password="123456"
-    )
+class MainHandler(tornado.web.RequestHandler):
+    """主界面"""
+
+    def get(self):
+        userid = self.get_secure_cookie("userid")
+        self.render("index.html", user=userid)
+
 
 class LoginHandler(tornado.web.RequestHandler):
     """登录视图"""
+
     def get(self):
         self.render("login.html", title="登录")
 
@@ -28,11 +28,12 @@ class LoginHandler(tornado.web.RequestHandler):
                 return self.write("<script>alert('密码错误!'); window.location.href='login';</script>")
         else:
             return self.write("<script>alert('用户不存在!'); window.location.href='login'</script>")
-   
+
 
 #注销
 class LogoutHandler(tornado.web.RequestHandler):
-	def get(self):
-		self.clear_all_cookies()
-		time.sleep(1)
-		self.redirect("/login")
+    def get(self):
+        self.clear_all_cookies()
+        time.sleep(1)
+        self.redirect("/login")
+
