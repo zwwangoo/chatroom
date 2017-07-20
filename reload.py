@@ -37,3 +37,25 @@ class LogoutHandler(tornado.web.RequestHandler):
         time.sleep(1)
         self.redirect("/login")
 
+
+class RoomHandler(tornado.web.RequestHandler):
+    """ 获取所有在线房间 """
+    def get(self):
+        userid = self.get_secure_cookie("userid")
+        msg = db.query("select userid, msg from message order by created_time;")
+        self.render("room.html", msg=msg)
+
+
+class CreateRoomHandler(tornado.web.RequestHandler):
+    """创建房间"""
+    def __init__(self, arg):
+        super(CreateRoomHandler, self).__init__()
+        self.arg = arg
+
+
+class DropRoomHandler(tornado.web.RequestHandler):
+    """删除房间"""
+    def __init__(self, arg):
+        super(DropRoomHandler, self).__init__()
+        self.arg = arg
+

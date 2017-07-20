@@ -2,8 +2,7 @@ import tornado.web
 
 from chat import ChatHandler
 from longpolling import LongPollingHandler
-from reload import MainHandler, LoginHandler, LogoutHandler
-from room import RoomHandler
+from reload import MainHandler, LoginHandler, LogoutHandler, RoomHandler
 from settings import settings
 
 
