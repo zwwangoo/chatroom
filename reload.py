@@ -70,7 +70,7 @@ class MainHandler(BaseHandler):
         allRoom = db.query("SELECT room.id, roomname, created_time, username FROM room, user "
                            "WHERE room.owner_id=user.id")
         mineRoom = db.query("SELECT room.id, roomname, created_time, username FROM room, user "
-                            "WHERE room.owner_id=%s AND username=%s", userid, userid)
+                            "WHERE room.owner_id=%s AND user.id=%s", userid, userid)
         self.render("index.html", allRoom=allRoom, mineRoom=mineRoom)
 
 

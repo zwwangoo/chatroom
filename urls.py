@@ -1,6 +1,6 @@
 import tornado.web
 
-from chat import SendMsgHandler
+from chat import SendMsgHandler, CreateRoom
 from longpolling import LongPollingHandler
 from reload import MainHandler, LoginHandler, LogoutHandler, ChatRoomHandler, RegisteredHandler
 from settings import settings
@@ -15,6 +15,7 @@ application = tornado.web.Application([
     (r"^/index$", MainHandler),
 
     (r"^/chatroom/([0-9]+)", ChatRoomHandler),
+    (r"^/createroom", CreateRoom),
     (r"^/sendMsg$", SendMsgHandler),
 
 ], **settings)

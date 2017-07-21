@@ -45,7 +45,7 @@
                         <th></th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="allRoom">
                 {% for room in allRoom %}
                     <tr>
                         <td>{{ room.id }}</td>
@@ -68,10 +68,10 @@
                         <th>房主</th>
                         <th>创建时间</th>
                         <th>人数</th>
-                        <th></th>
+                        <th><a href="#create-chatroom" data-toggle="modal">创建聊天室</a></th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="mineRoom">
                     {% for room in mineRoom %}
                     <tr>
                         <td>{{ room.id }}</td>
@@ -87,8 +87,52 @@
         </div>
     </div>
 
+    <div class="modal fade" id="create-chatroom" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title">聊天室创建</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-horizontal" role="form">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">名称</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" name="roomname" placeholder="帅气的名称"></div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">描述</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" placeholder="吸引你的朋友" name="description"></div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">这是密码</label>
+                            <div class="col-sm-10">
+                                <input type="password" name="password" class="form-control" placeholder="可以把密码告诉你的朋友哦"></div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">标签</label>
+                            <div class="col-sm-10">
+                                <label style="display: inline-table;margin: 0 20px;"><input type="checkbox" value="0">IT</label>
+                                <label style="display: inline-table;margin: 0 20px;"><input type="checkbox" value="1">同事</label>
+                                <label style="display: inline-table;margin: 0 20px;"><input type="checkbox" value="2">校友</label>
+                                <label style="display: inline-table;margin: 0 20px;"><input type="checkbox" value="3">工作室</label>
+                            </div>
+                        </div>
+                        {% raw xsrf_form_html() %}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default close-box" data-dismiss="modal" onclick="resetForm()">关闭</button>
+                    <input type="button" name="submit" class="btn btn-primary" value="创建" />
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 </body>
 <script type="text/javascript" src="{{ static_url('js/jquery-2.0.3.min.js') }}"></script>
 <script type="text/javascript" src="{{ static_url('bootstrap-3.3.5/js/bootstrap.js') }}"></script>
+<script type="text/javascript" src="{{ static_url('js/manage-room.js') }}"></script>
 </html>

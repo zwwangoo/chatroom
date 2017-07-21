@@ -6,7 +6,7 @@
 	<link rel="stylesheet" href="{{ static_url('bootstrap-3.3.5/css/bootstrap.css') }}">
     <link rel="stylesheet" href="{{ static_url('stylesheet/room-all.css') }}">
 </head>
-<body>
+<body onload="broadcast('in')" onbeforeunload="broadcast('out')">
 {% include 'base/nav.html' %}
 <div class="center">
     <div>
@@ -81,7 +81,9 @@
 $(document).ready(function() {
 
     document.getElementsByName("message")[0].focus();
-    $(".msg-list").animate({scrollTop:$(".msg-list")[0].scrollHeight + "px"}, 100);
+
+    $(".msg-list").animate({scrollTop:$(".msg-list")[0].scrollHeight + "px"}, 100);  // 将聊天记录滚到最后
+
     var updater = {
 		poll: function(){
 		    $.ajax({
@@ -92,7 +94,7 @@ $(document).ready(function() {
 			    success: updater.onSuccess,
 			    error: updater.onError});
 			},
-        onSuccess: function(data, dataStatus){
+        onSuccess: function(data){
             try{
                 if (data.msg != "") {
                     if(data.belong == '1'){
@@ -121,33 +123,44 @@ $(document).ready(function() {
     updater.poll();
 
 	$("input[name='submit']").click(function () {
-		$.ajax({
-			url:"/sendMsg",
-			type:"post",
-			dataType:"json",
-			data:{
-				"message":$("textarea[name='message']").val(),
-				"_xsrf":$("input[name='_xsrf']").val()
-			},
-			success:function(data){
-				document.getElementsByName("message")[0].value = ""
-			},
-            error:function (data) {
-                console.log(data)
-            }
-		})
-	})
-})
-</script>
-<script>
-	//点击
-	function on_return(evt){
-		evt = evt ? evt : (window.event ? window.event : null);
-		if(evt.keyCode == 13){
-			if (document.all('submit')!=null){
-				document.all('submit').click();
-		    }
-	 	}
-	 }
+		sendMsg($("textarea[name='message']").val())
+	});
+});
+
+function sendMsg(message) {
+    $.ajax({
+        url:"/sendMsg",
+        type:"post",
+        dataType:"json",
+        data:{
+            "message": message,
+            "_xsrf":$("input[name='_xsrf']").val()
+        },
+        success:function(data){
+            document.getElementsByName("message")[0].value = ""
+        },
+        error:function (data) {
+            console.log(data)
+        }
+    })
+}
+
+function on_return(evt){
+    evt = evt ? evt : (window.event ? window.event : null);
+    if(evt.keyCode == 13){
+        if (document.all('submit')!=null){
+            document.all('submit').click();
+        }
+    }
+ }
+
+function broadcast(operating) {
+    if(operating == "in"){
+        message = "加入聊天室"
+    }else {
+        message = "离开聊天室"
+    }
+    sendMsg(message);
+}
 </script>
 </html>
