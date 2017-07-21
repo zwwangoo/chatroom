@@ -4,6 +4,10 @@
 	<meta charset="UTF-8">
 	<title>首页</title>
 	<link rel="stylesheet" href="{{ static_url('bootstrap-3.3.5/css/bootstrap.css') }}">
+    <style>
+        .tab-pane {display: none}
+        .active {display: block}
+    </style>
 </head>
 <body>
 {% include 'base/nav.html' %}
@@ -23,52 +27,66 @@
             </blockquote>
         </div>
     </div>
-
-    <div class="carousel slide" id="carousel-970426">
-        <ol class="carousel-indicators">
-            <li class="active" data-slide-to="0" data-target="#carousel-970426">
-            </li>
-            <li data-slide-to="1" data-target="#carousel-970426">
-            </li>
-            <li data-slide-to="2" data-target="#carousel-970426">
-            </li>
-        </ol>
-        <div class="carousel-inner">
-            <div class="item active">
-                <img alt="" src="/static/images/1.jpg" />
-                <div class="carousel-caption">
-                    <h4>
-                        First Thumbnail label
-                    </h4>
-                    <p>
-                        Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.
-                    </p>
-                </div>
-            </div>
-            <div class="item">
-                <img alt="" src="/static/images/2.jpg" />
-                <div class="carousel-caption">
-                    <h4>
-                        Second Thumbnail label
-                    </h4>
-                    <p>
-                        Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.
-                    </p>
-                </div>
-            </div>
-            <div class="item">
-                <img alt="" src="/static/images/3.jpg" />
-                <div class="carousel-caption">
-                    <h4>
-                        Third Thumbnail label
-                    </h4>
-                    <p>
-                        Cras justo odio, dapibus ac facilisis in, egestas eget quam. Donec id elit non mi porta gravida at eget metus. Nullam id dolor id nibh ultricies vehicula ut id elit.
-                    </p>
-                </div>
-            </div>
-        </div> <a class="left carousel-control" href="#carousel-970426" data-slide="prev"><span class="glyphicon glyphicon-chevron-left"></span></a> <a class="right carousel-control" href="#carousel-970426" data-slide="next"><span class="glyphicon glyphicon-chevron-right"></span></a>
+    <div class="row-fluid">
+        <ul class="nav nav-tabs">
+            <li class="active"><a href="#allRoom" data-toggle="tab">所有房间</a></li>
+            <li class=""><a href="#mineRoom" data-toggle="tab">我的房间</a></li>
+            <li class=""><a href="#latelyRoom" data-toggle="tab">最近加入</a></li>
+        </ul>
+        <div class="tab-pane allroom active" id="allRoom">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>房间名</th>
+                        <th>房主</th>
+                        <th>创建时间</th>
+                        <th>人数</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for room in allRoom %}
+                    <tr>
+                        <td>{{ room.id }}</td>
+                        <td>{{ room.roomname }}</td>
+                        <td>{{ room.username }}</td>
+                        <td>{{ room.created_time }}</td>
+                        <td>12</td>
+                        <td><a href="/chatroom/{{ room.id }}">立即加入</a></td>
+                    </tr>
+                {% end %}
+                </tbody>
+            </table>
+        </div>
+        <div class="tab-pane allroom" id="mineRoom">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>房间名</th>
+                        <th>房主</th>
+                        <th>创建时间</th>
+                        <th>人数</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for room in mineRoom %}
+                    <tr>
+                        <td>{{ room.id }}</td>
+                        <td>{{ room.roomname }}</td>
+                        <td>{{ room.username }}</td>
+                        <td>{{ room.created_time }}</td>
+                        <td>12</td>
+                        <td><a href="/chatroom/{{ room.id }}">立即加入</a></td>
+                    </tr>
+                {% end %}
+                </tbody>
+            </table>
+        </div>
     </div>
+
 </div>
 </body>
 <script type="text/javascript" src="{{ static_url('js/jquery-2.0.3.min.js') }}"></script>

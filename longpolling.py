@@ -1,4 +1,5 @@
 #coding:utf-8
+import json
 import time
 import sys
 import tornado.web
@@ -64,6 +65,7 @@ class LongPollingHandler(tornado.web.RequestHandler):
             return
 
         self.set_header('Content-Type', 'application/json; charset=UTF-8')
-        #print "set-data: ",data
+        data = json.loads(data)
+        if data["userId"] == str(self.get_secure_cookie("userid")):
+            data["belong"] = "1"
         self.write(data)
-        self.finish()

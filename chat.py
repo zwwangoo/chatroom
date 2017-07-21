@@ -6,19 +6,10 @@ import tornado.web
 import json
 import tornadoredis
 from tornado.escape import json_encode
+from settings import db, redis_client
 
-# # mysql 链接
-db = torndb.Connection(
-    host="127.0.0.1:3306", 
-    database="chatroom",
-    user="root",
-    password="123456"
-    )
 
-c = tornadoredis.Client()
-c.connect()
-
-class ChatHandler(tornado.web.RequestHandler):
+class SendMsgHandler(tornado.web.RequestHandler):
     """聊天"""
 
     @tornado.web.asynchronous
@@ -33,7 +24,6 @@ class ChatHandler(tornado.web.RequestHandler):
             msg_group["msg"] = msg_item.msg
             if str(msg_item.userid) == str(userid):
                 msg_group["belong"] = 1
-
             else:
                 msg_group["belong"] = 0
             room_msg.append(msg_group)
@@ -43,17 +33,19 @@ class ChatHandler(tornado.web.RequestHandler):
     def post(self):
         roomchannel = 1
         userid = str(self.get_secure_cookie("userid"))
+        user = db.get("SELECT username FROM user WHERE id=%s", int(userid))
         message = str(self.get_argument("message"))
-        data = json_encode({'name':userid, 'msg':message})
+        data = json_encode({'username':user.username, 'msg':message, "userId":userid, "bglong": 0})
         
         createtime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         db.execute("insert into message(userid, msg, roomid, created_time, have_read) values (%s, %s, 1, %s, 0)", 
             userid, message, createtime)
         #收到将消息publish到Redis
         #print data
-        c.publish(roomchannel, data)
-        
+        redis_client.connect()
+        redis_client.publish(roomchannel, data)
         self.write(json_encode({'result':True}))
         self.finish()
+
 
         

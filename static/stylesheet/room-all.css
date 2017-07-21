@@ -12,10 +12,11 @@
 }
 .msg-left {
     text-align: left;
+    display: block;
 }
 .msg-right{
     text-align: right;
-    overflow-y: scroll;
+    display: block;
 }
 .msg-list {
     width: 100%;

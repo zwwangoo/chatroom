@@ -22,11 +22,24 @@
         </div>
         <div class="col-sm-10" style="margin-top: 10px;">
             <button type="submit" class="btn btn-default">登录</button>
+            <a class="btn btn-default" onclick="registered()">注册</a>
         </div>
     </div>
 </form>
 <script language="javascript">
     document.getElementsByName("name")[0].focus();
+
+    function registered() {
+        username = document.getElementsByName("name")[0].value;
+        password = document.getElementsByName("password")[0].value;
+        if(username == "" || password == ""){
+            alert("必填项不能为空");
+            return false;
+        }else {
+            window.location.href="/registered?username=" + username + "&password=" + password;
+            return true;
+        }
+    }
 </script>
 </body>
 </html>

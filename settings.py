@@ -1,9 +1,9 @@
 # coding: utf-8
 import os
+
+import tornadoredis
 import torndb
-import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
+
 
 settings = {
     "cookie_secret": "61oETzKXQAGaYdkL5gEmGeJJFuYh7EQnp2XdTP1o/Vo=",
@@ -32,3 +32,5 @@ db = torndb.Connection(
     user="root",
     password="123456"
 )
+
+redis_client = tornadoredis.Client()

@@ -48,7 +48,11 @@
             <div class="msg-box">
                 <div class="msg-list">
                 {% for item in msg %}
-                    {{ item.userid }}:&nbsp;{{ item.msg }} <br>
+                    {% if item["belong"] == 1 %}
+                    <span class="msg-right">{{ item["msg"] }}</span>
+                    {% else %}
+                    <span class="msg-left">{{ item["username"] }}: {{ item["msg"] }}</span>
+                    {% end %}
                 {% end %}
                 </div>
             </div>
@@ -91,8 +95,13 @@ $(document).ready(function() {
         onSuccess: function(data, dataStatus){
             try{
                 if (data.msg != "") {
-                	$(".msg-list").append(data.name+": " + data.msg + "<br />")
-                        .animate({scrollTop:$(".msg-list")[0].scrollHeight + "px"}, 100);
+                    if(data.belong == '1'){
+                        $(".msg-list").append("<span class='msg-right'>" + data.msg + "</span>")
+
+                	}else {
+                        $(".msg-list").append("<span class='msg-left'>" + data.username + ":" + data.msg + "</span>")
+                    }
+                    $(".msg-list").animate({scrollTop:$(".msg-list")[0].scrollHeight + "px"}, 100);
                 }
             }
             catch(e){
@@ -113,7 +122,7 @@ $(document).ready(function() {
 
 	$("input[name='submit']").click(function () {
 		$.ajax({
-			url:"/chat",
+			url:"/sendMsg",
 			type:"post",
 			dataType:"json",
 			data:{
@@ -122,7 +131,10 @@ $(document).ready(function() {
 			},
 			success:function(data){
 				document.getElementsByName("message")[0].value = ""
-			}
+			},
+            error:function (data) {
+                console.log(data)
+            }
 		})
 	})
 })
