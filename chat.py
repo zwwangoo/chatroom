@@ -33,15 +33,15 @@ class SendMsgHandler(tornado.web.RequestHandler):
 
     # @tornado.web.authenticated
     def post(self):
-        roomchannel = 1
+        roomchannel = self.get_secure_cookie("roomId")
         userid = str(self.get_secure_cookie("userid"))
         user = db.get("SELECT username FROM user WHERE id=%s", int(userid))
         message = str(self.get_argument("message"))
         data = json_encode({'username':user.username, 'msg':message, "userId":userid, "bglong": 0})
         
         createtime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        db.execute("insert into message(userid, msg, roomid, created_time, have_read) values (%s, %s, 1, %s, 0)", 
-            userid, message, createtime)
+        db.execute("insert into message(userid, msg, roomid, created_time, have_read) values (%s, %s, %s, %s, 0)",
+            userid, message, roomchannel, createtime)
         #收到将消息publish到Redis
         #print data
         redis_client.connect()

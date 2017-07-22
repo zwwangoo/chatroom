@@ -78,6 +78,9 @@ class ChatRoomHandler(BaseHandler):
     @tornado.web.authenticated
     def get(self, roomId):
         userid = str(self.get_secure_cookie("userid"))
+        if not db.query("SELECT * FROM room WHERE id=%s", roomId):
+            return self.redirect("/index")
+        self.set_secure_cookie("roomId", roomId)
         room_msg = []
         owner_msg = db.query(
             "SELECT user.id, user.username, msg, created_time FROM message, user "

@@ -20,8 +20,7 @@ class LongPollingHandler(tornado.web.RequestHandler):
         self.client.connect()
 
     def get_roomchannel(self):
-        # roomchannel = self.get_secure_cookie("roomid")
-        roomchannel = 1
+        roomchannel = self.get_secure_cookie("roomId")
         return str(roomchannel)
 
     # 订阅Redis的消息
