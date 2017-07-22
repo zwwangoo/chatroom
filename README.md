@@ -13,6 +13,10 @@
 
 点击[这里](https://github.com/MicrosoftArchive/redis/releases )下载
 
+### ubuntu server环境下
+
+    sudo apt-get install redis-server
+
 ## 安装 tornado
 
     pip install tornado-redis
@@ -25,8 +29,17 @@
 
 添加用户数据在【**user**】表
 
+## demo
+
+访问[这里](http://http://123.207.146.54:8000/index)查看demo，用户名密码自己注册就行
+
 ## 参考
 
 - [tornado官方文档(中文)](https://tornado-zh.readthedocs.io/zh/latest/guide.html)
 - [ruboob.com(菜鸟教程)redis教程](http://www.runoob.com/redis/redis-tutorial.html)
 - [ruboob.com(菜鸟教程)python教程](http://www.runoob.com/python/python-tutorial.html)
+
+
+---
+
+目前还差当前在线用户的判断没有完成
