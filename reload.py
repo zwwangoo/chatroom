@@ -71,7 +71,11 @@ class MainHandler(BaseHandler):
                            "WHERE room.owner_id=user.id")
         mineRoom = db.query("SELECT room.id, roomname, created_time, username FROM room, user "
                             "WHERE room.owner_id=%s AND user.id=%s", userid, userid)
-        self.render("index.html", allRoom=allRoom, mineRoom=mineRoom)
+        latelyRoom = db.query("SELECT room.id, roomname, created_time, user.username "
+                            "FROM room, user WHERE user.id=room.owner_id "
+                            "AND room.id IN (SELECT roomid FROM message WHERE message.userid=%s "
+                            "GROUP BY roomid )", userid)
+        self.render("index.html", allRoom=allRoom, mineRoom=mineRoom, latelyRoom=latelyRoom)
 
 
 class ChatRoomHandler(BaseHandler):
@@ -81,19 +85,35 @@ class ChatRoomHandler(BaseHandler):
         if not db.query("SELECT * FROM room WHERE id=%s", roomId):
             return self.redirect("/index")
         self.set_secure_cookie("roomId", roomId)
-        room_msg = []
+
+        room = db.get("SELECT roomname FROM room WHERE id=%s", int(roomId))
+
+        latelyRoom = db.query("SELECT room.id, roomname, created_time, user.username "
+                              "FROM room, user WHERE user.id=room.owner_id "
+                              "AND room.id IN (SELECT roomid FROM message WHERE message.userid=%s "
+                              "GROUP BY roomid )", userid)
+
         owner_msg = db.query(
-            "SELECT user.id, user.username, msg, created_time FROM message, user "
+            "SELECT user.id, user.username, msg, created_time, type FROM message, user "
             "WHERE user.id=message.userid AND have_read=0 AND roomid=%s "
             "ORDER BY created_time;", roomId)
+
+        room_msg = []
+        userid_group = []
+        user_group = []
         for msg_item in owner_msg:
             msg_group = {}
+            if msg_item.type ==1:continue
+            if msg_item.id not in userid_group:
+                userid_group.append(msg_item.id)
+                user_group.append({"username": msg_item.username, "userid": msg_item.id})
             msg_group["username"] = msg_item.username
-            msg_group["createtime"] = msg_item.created_time.strftime('%Y-%m-%d %H:%M:%S')
+            msg_group["created_time"] = msg_item.created_time.strftime('%Y-%m-%d %H:%M:%S')
             msg_group["msg"] = msg_item.msg
+            msg_group["type"] = str(msg_item.type)
             if str(msg_item.id) == str(userid):
                 msg_group["belong"] = 1
             else:
                 msg_group["belong"] = 0
             room_msg.append(msg_group)
-        self.render("chatroom.html", msg=room_msg)
+        self.render("chatroom.html", room=room, msg=room_msg, users=user_group, latelyRoom=latelyRoom)

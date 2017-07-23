@@ -10,8 +10,8 @@ db = torndb.Connection(
 
 create_table = """
 
-CREATE TABLE
-IF NOT EXISTS user (
+DROP TABLE IF EXISTS user;
+CREATE TABLE user (
 	`id` INT (11) NOT NULL AUTO_INCREMENT,
 	`username` VARCHAR (255) NOT NULL,
 	`password` VARCHAR (255) NOT NULL,
@@ -22,8 +22,8 @@ IF NOT EXISTS user (
 	PRIMARY KEY (`id`)
 );
 
-CREATE TABLE
-IF NOT EXISTS room (
+DROP TABLE IF EXISTS room;
+CREATE TABLE room (
 	`id` INT (11) NOT NULL AUTO_INCREMENT,
 	`roomname` VARCHAR (255) NOT NULL,
 	`created_time` datetime,
@@ -31,14 +31,15 @@ IF NOT EXISTS room (
 	PRIMARY KEY (`id`)
 );
 
-CREATE TABLE
-IF NOT EXISTS message (
+DROP TABLE IF EXISTS message;
+CREATE TABLE message (
 	`id` INT (11) NOT NULL AUTO_INCREMENT,
 	`roomid` INT (11) NOT NULL,
 	`msg` VARCHAR (500) NOT NULL,
 	`userid` INT (11) NOT NULL,
-	`have_read` bit (1) DEFAULT 0,
+	`have_read` tinyint(1) DEFAULT 0,
 	`created_time` datetime,
+	`type` tinyint(1) DEFAULT 0,
 	PRIMARY KEY (`id`)
 );
 

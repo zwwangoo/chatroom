@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import torndb
 import tornado.ioloop
 import os
 basePath = os.path.dirname(os.path.dirname(__file__))

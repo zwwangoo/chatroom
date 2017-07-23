@@ -18,11 +18,11 @@
         <div class="view clearfix">
             <blockquote contenteditable="true">
                 <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.
+                    除了前途，我们这波人从来没有过任何其他东西。
                 </p>
                 <small>
-                    Someone famous
-                    <cite title="Source Title">Source Title</cite>
+                    《北京，北京》
+{#                    <cite title="Source Title">Source Title</cite>#}
                 </small>
             </blockquote>
         </div>
@@ -52,7 +52,7 @@
                         <td>{{ room.roomname }}</td>
                         <td>{{ room.username }}</td>
                         <td>{{ room.created_time }}</td>
-                        <td>12</td>
+                        <td>{{ room.id }} / 100 </td>
                         <td><a href="/chatroom/{{ room.id }}">立即加入</a></td>
                     </tr>
                 {% end %}
@@ -78,7 +78,33 @@
                         <td>{{ room.roomname }}</td>
                         <td>{{ room.username }}</td>
                         <td>{{ room.created_time }}</td>
-                        <td>12</td>
+                        <td>2</td>
+                        <td><a href="/chatroom/{{ room.id }}">立即加入</a></td>
+                    </tr>
+                {% end %}
+                </tbody>
+            </table>
+        </div>
+        <div class="tab-pane allroom" id="latelyRoom">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>房间名</th>
+                        <th>房主</th>
+                        <th>创建时间</th>
+                        <th>人数</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody class="latelyRoom">
+                    {% for room in latelyRoom %}
+                    <tr>
+                        <td>{{ room.id }}</td>
+                        <td>{{ room.roomname }}</td>
+                        <td>{{ room.username }}</td>
+                        <td>{{ room.created_time }}</td>
+                        <td>2</td>
                         <td><a href="/chatroom/{{ room.id }}">立即加入</a></td>
                     </tr>
                 {% end %}
@@ -134,5 +160,5 @@
 </body>
 <script type="text/javascript" src="{{ static_url('js/jquery-2.0.3.min.js') }}"></script>
 <script type="text/javascript" src="{{ static_url('bootstrap-3.3.5/js/bootstrap.js') }}"></script>
-<script type="text/javascript" src="{{ static_url('js/manage-room.js') }}"></script>
+<script type="text/javascript" src="{{ static_url('js/room.js') }}"></script>
 </html>

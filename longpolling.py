@@ -49,7 +49,7 @@ class LongPollingHandler(tornado.web.RequestHandler):
 
     def on_timeout(self, num):
         self.time_handler = None
-        self.send_data(json_encode({'name': '', 'msg': '', "userId": self.get_secure_cookie("userid"), "belong": 0}))
+        self.send_data(json_encode({'name': '', 'msg': '', "userId": self.get_secure_cookie("userid"), "belong": 0, "type": 0}))
         if (self.client.connection.connected()):
             self.client.disconnect()
 
@@ -68,7 +68,7 @@ class LongPollingHandler(tornado.web.RequestHandler):
         self.set_header('Content-Type', 'application/json; charset=UTF-8')
         data = json.loads(data)
         if data["userId"] == str(self.get_secure_cookie("userid")):
-            data["belong"] = "1"
+            data["belong"] = 1
         self.write(data)
         """ 当post()返回，请求还没有完成，当到该处前响应仍是打开的，
         调用self.finish()返回该次相应

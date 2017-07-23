@@ -1,7 +1,6 @@
 #coding:utf-8
 import os
 import datetime
-import torndb
 import tornado.web
 import json
 import tornadoredis
@@ -13,35 +12,22 @@ from reload import BaseHandler
 class SendMsgHandler(tornado.web.RequestHandler):
     """聊天"""
 
-    @tornado.web.authenticated
-    def get(self):
-        userid = str(self.get_secure_cookie("userid"))
-        room_msg = []
-        owner_msg = db.query("select userid, msg, created_time from message where have_read=0 and roomid order by created_time;")
-        for msg_item in owner_msg:
-            msg_group = {}
-            msg_group["userid"] = msg_item.userid
-            msg_group["createtime"] = msg_item.created_time.strftime('%Y-%m-%d %H:%M:%S')
-            msg_group["msg"] = msg_item.msg
-            if str(msg_item.userid) == str(userid):
-                msg_group["belong"] = 1
-            else:
-                msg_group["belong"] = 0
-            room_msg.append(msg_group)
-        self.write(json.dumps(room_msg))
-
-
     # @tornado.web.authenticated
     def post(self):
         roomchannel = self.get_secure_cookie("roomId")
         userid = str(self.get_secure_cookie("userid"))
         user = db.get("SELECT username FROM user WHERE id=%s", int(userid))
         message = str(self.get_argument("message"))
-        data = json_encode({'username':user.username, 'msg':message, "userId":userid, "bglong": 0})
-        
+        msg_type = int(self.get_argument("type"))
         createtime = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        db.execute("insert into message(userid, msg, roomid, created_time, have_read) values (%s, %s, %s, %s, 0)",
-            userid, message, roomchannel, createtime)
+        data = json_encode({
+            'username':user.username, 'msg':message,
+            "userId":userid, "bglong": 0, "type": msg_type,
+            "created_time": createtime
+        })
+
+        db.execute("insert into message(userid, msg, roomid, created_time, type) values (%s, %s, %s, %s, %s)",
+            userid, message, roomchannel, createtime, msg_type)
         #收到将消息publish到Redis
         #print data
         redis_client.connect()

@@ -4,7 +4,7 @@
 	<meta charset="UTF-8">
 	<title>聊天室</title>
 	<link rel="stylesheet" href="{{ static_url('bootstrap-3.3.5/css/bootstrap.css') }}">
-    <link rel="stylesheet" href="{{ static_url('stylesheet/room-all.css') }}">
+    <link rel="stylesheet" href="{{ static_url('stylesheet/chatroom.css') }}">
 </head>
 <body onload="broadcast('in')" onbeforeunload="broadcast('out')">
 {% include 'base/nav.html' %}
@@ -12,20 +12,13 @@
     <div>
         <div class="sidenav">
             <div class="sidebar-nav">
-                <div class="nav-header">群成员72/184</div>
+                <div class="nav-header">群成员<span style="float: right">{{ len(users) }}</span></div>
                 <ul class="nav nav-list accordion-group">
+                    {% for user in users %}
                     <li class="boxes" style="display: list-item;;">
-                        <div class="preview">标题栏1</div>
+                        <div class="preview">{{ user["username"] }}</div>
                     </li>
-                    <li class="boxes" style="display: list-item;;">
-                        <div class="preview">标题栏3</div>
-                    </li>
-                    <li class="boxes" style="display: list-item;;">
-                        <div class="preview">标题栏2</div>
-                    </li>
-                    <li class="boxes" style="display: list-item;;">
-                        <div class="preview">标题栏1</div>
-                    </li>
+                    {% end %}
 
                 </ul>
             </div>
@@ -40,7 +33,7 @@
         </div>
 
         <div class="chat-box">
-            <h3>聊天室</h3>
+            <h3>{{ room.roomname }}</h3>
             <span class="label label-default">同学</span>
             <span class="label label-default">临时</span>
             <span class="label label-default">计算机</span>
@@ -48,10 +41,20 @@
             <div class="msg-box">
                 <div class="msg-list">
                 {% for item in msg %}
-                    {% if item["belong"] == 1 %}
-                    <span class="msg-right">{{ item["msg"] }}</span>
+                    {% if item["type"] == '1' %}
+                        <div class="msg msg-title">
+                            {{ item["username"] }}: {{ item["msg"] }}
+                        </div>
                     {% else %}
-                    <span class="msg-left">{{ item["username"] }}: {{ item["msg"] }}</span>
+                        {% if item["belong"] == 1 %}
+                            <div class="msg msg-right">
+                        {% else%}
+                            <div class="msg msg-left">
+                        {% end %}
+                            <span class="msg-head">{{ item["username"] }}</span>
+                            <span class="msg-time">{{ item["created_time"] }}</span>
+                            <div class="msg-body">{{ item["msg"] }}</div>
+                        </div>
                     {% end %}
                 {% end %}
                 </div>
@@ -64,12 +67,12 @@
             </div>
         </div>
         <div class="col-sm-2">
-            <div class="well">
-                <p>公共聊天室</p>
-            </div>
-            <div class="well">
-                <p>智慧软件工作室</p>
-            </div>
+            {% for item in latelyRoom %}
+            <a class="well" style="display: block;text-decoration: none;" href="/chatroom/{{ item.id }}">
+                <p>{{ item.roomname }}</p>
+            </a>
+            {% end %}
+
         </div>
     </div>
 </div>
@@ -77,90 +80,6 @@
 </body>
 <script type="text/javascript" src="{{ static_url('js/jquery-2.0.3.min.js') }}"></script>
 <script type="text/javascript" src="{{ static_url('bootstrap-3.3.5/js/bootstrap.js') }}"></script>
-<script language="javascript">
-$(document).ready(function() {
-
-    document.getElementsByName("message")[0].focus();
-
-    $(".msg-list").animate({scrollTop:$(".msg-list")[0].scrollHeight + "px"}, 100);  // 将聊天记录滚到最后
-
-    var updater = {
-		poll: function(){
-		    $.ajax({
-	    		url: "/longpolling",
-			    type: "POST",
-			    dataType: "json",
-			    data:{"_xsrf":$("input[name='_xsrf']").val()},
-			    success: updater.onSuccess,
-			    error: updater.onError});
-			},
-        onSuccess: function(data){
-            try{
-                if (data.msg != "") {
-                    if(data.belong == '1'){
-                        $(".msg-list").append("<span class='msg-right'>" + data.msg + "</span>")
-
-                	}else {
-                        $(".msg-list").append("<span class='msg-left'>" + data.username + ":" + data.msg + "</span>")
-                    }
-                    $(".msg-list").animate({scrollTop:$(".msg-list")[0].scrollHeight + "px"}, 100);
-                }
-            }
-            catch(e){
-            	updater.onError(e);
-            	return;
-            }
-            updater.poll();
-        },
-        onError: function(e){
-            if (e.message)
-            	console.log("Poll Error" + e.message);
-            else
-            	console.log(e);
-        	}
-      	};
-
-    updater.poll();
-
-	$("input[name='submit']").click(function () {
-		sendMsg($("textarea[name='message']").val())
-	});
-});
-
-function sendMsg(message) {
-    $.ajax({
-        url:"/sendMsg",
-        type:"post",
-        dataType:"json",
-        data:{
-            "message": message,
-            "_xsrf":$("input[name='_xsrf']").val()
-        },
-        success:function(data){
-            document.getElementsByName("message")[0].value = ""
-        },
-        error:function (data) {
-            console.log(data)
-        }
-    })
-}
-
-function on_return(evt){
-    evt = evt ? evt : (window.event ? window.event : null);
-    if(evt.keyCode == 13){
-        if (document.all('submit')!=null){
-            document.all('submit').click();
-        }
-    }
- }
-
-function broadcast(operating) {
-    if(operating == "in"){
-        message = "加入聊天室"
-    }else {
-        message = "离开聊天室"
-    }
-    sendMsg(message);
-}
-</script>
+<script type="text/javascript" src="{{ static_url('js/chat.js') }}"></script>
+<script type="text/javascript" src="{{ static_url('js/longpolling.js') }}"></script>
 </html>
