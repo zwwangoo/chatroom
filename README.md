@@ -3,9 +3,8 @@
 > 基于python的tornado框架下的即时聊天室
 > tornado + redis + mysql
 
-![广场](https://i.loli.net/2017/07/22/597346b254be0.png)
-![加入聊天室](https://i.loli.net/2017/07/22/597346b25f4de.png)
-![聊天](https://i.loli.net/2017/07/22/597346b27c87f.png)
+![广场](https://i.loli.net/2017/07/23/5974505062ad2.png)
+![聊天室](https://i.loli.net/2017/07/23/597450508d457.png)
 
 ## 安装tornado
 
