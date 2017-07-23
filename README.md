@@ -39,6 +39,7 @@
 
 ## 参考
 
+- [官方给的chat示例](https://github.com/tornadoweb/tornado/tree/stable/demos/chat)
 - [tornado官方文档(中文)](https://tornado-zh.readthedocs.io/zh/latest/guide.html)
 - [ruboob.com(菜鸟教程)redis教程](http://www.runoob.com/redis/redis-tutorial.html)
 - [ruboob.com(菜鸟教程)python教程](http://www.runoob.com/python/python-tutorial.html)
@@ -47,3 +48,26 @@
 ---
 
 目前还差当前在线用户的判断没有完成
+
+---
+# 完成情况和实现功能说明
+
+- 基于tornado web AJAX的长轮询模式实现的及时在线聊天室
+- 实现了基本的异步即时通信的功能、多人在线群聊功能、聊天室创建功能
+- 简单练习了tornado的异步非阻塞的概念实现
+- 深入学习了tornado web应用的结构和实现
+
+# 不足和可拓展的地方
+
+## 不足
+- 长轮询链接断开后无法自动重新连接
+- 聊天室人员在线未使用在线状态判断
+
+## 可拓展
+- 好友的添加和一对一聊天
+- 关注聊天室后，聊天室内容及时推送
+
+---
+# 说明：
+
+就做到这了，其他的问题，等以后有兴趣了再来研究吧。加油！
